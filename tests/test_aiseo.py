@@ -8,15 +8,15 @@ from pages.aiseoTest.compliance import judgeNSFWImage
 
 
 @pytest.fixture()
-def webdriverStater():
+def webdriverStater(url):
     edge = webdriver.Edge()
-    edge.get('https://infohivehub.com/zh-CN/details/caa237ae07a5bc5a9c5e10f7933a11760d045ceffe693f0d51081d13ed12df29')
+    edge.get(url)
     return edge
 
 @pytest.fixture()
-def webdriverStaterGetText():
+def webdriverStaterGetText(url):
     edge = webdriver.Edge()
-    edge.get('https://infohivehub.com/zh-CN/details/caa237ae07a5bc5a9c5e10f7933a11760d045ceffe693f0d51081d13ed12df29')
+    edge.get(url)
     # 定位正文元素（根据实际情况调整选择器）
     body_element = edge.find_element(By.CLASS_NAME, "markdown-content")
 
@@ -26,18 +26,18 @@ def webdriverStaterGetText():
     return  cleaned_text
 
 @pytest.fixture()
-def webdriverStaterGetImage():
+def webdriverStaterGetImage(url):
     edge = webdriver.Edge()
-    edge.get('https://infohivehub.com/zh-CN/details/caa237ae07a5bc5a9c5e10f7933a11760d045ceffe693f0d51081d13ed12df29')
+    edge.get(url)
     images = edge.find_elements(By.TAG_NAME, 'img')
     imagePath = []
     [imagePath.append(image.get_attribute('src')) for image in images]
     return imagePath
 
 @pytest.fixture()
-def webdriverStaterGetKeyword():
+def webdriverStaterGetKeyword(url):
     edge = webdriver.Edge()
-    edge.get('https://infohivehub.com/zh-CN/details/caa237ae07a5bc5a9c5e10f7933a11760d045ceffe693f0d51081d13ed12df29')
+    edge.get(url)
     keywords = edge.find_elements(By.CLASS_NAME, 'bg-gray-700')
     keyword = [word.text for word in keywords]
     return keyword
