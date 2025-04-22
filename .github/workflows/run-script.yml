@@ -1,0 +1,50 @@
+name: Run Judge SEO
+
+on:
+  schedule:
+    - cron: '0 0 * * * *'  # 每半小时运行一次（UTC 时间）
+  workflow_dispatch:         # 也可以手动触发
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        pip install requests requst
+        pip install requests json
+        pip install requests asyncio
+        pip install requests aiohttp
+        pip install requests pymongo
+        pip install requests subprocess
+        pip install requests ssl
+        pip install requests sys
+        pip install requests os
+        pip install requests selenium
+        pip install requests base64
+        pip install requests torch
+        pip install requests PIL
+        pip install requests transformers
+        pip install requests serpapi
+        pip install requests time
+        pip install requests difflib
+#        pip install requests
+
+
+    - name: Run script
+      run: |
+        echo "当前目录为："
+        pwd
+        echo "列出目录内容："
+        ls -la
+        echo "开始运行脚本"
+        python pages/aiseoTest/abutmentDB.py
