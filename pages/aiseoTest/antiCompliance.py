@@ -46,6 +46,7 @@ def Redirect_deception(edge):
     # 检查是否存在 meta refresh 标签
     if '<meta http-equiv="refresh"' in pageSource:
         print("页面包含 Meta Refresh 跳转")
+        return False
     else:
         print("没有找到 Meta Refresh 跳转")
 
@@ -55,9 +56,10 @@ def Redirect_deception(edge):
     for script in scripts:
         if "window.location.href" in script.get_attribute("innerHTML"):
             print("页面包含 JavaScript 重定向")
-            break
-    else:
-        print("没有找到 JavaScript 重定向")
+            return False
+        else:
+            print("没有找到 JavaScript 重定向")
+    return True
 
 # 外链作弊
 # 你的 IPQS API Key

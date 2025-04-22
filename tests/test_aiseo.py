@@ -4,14 +4,14 @@ from selenium.webdriver.common.by import By
 from pages.aiseoTest import aiseoTest, antiCompliance, compliance
 from selenium import webdriver
 
-from pages.aiseoTest.compliance import judgeNSFWImage
-
 
 @pytest.fixture()
 def webdriverStater(url):
     edge = webdriver.Edge()
     edge.get(url)
-    return edge
+    yield edge
+    edge.quit()
+
 
 @pytest.fixture()
 def webdriverStaterGetText(url):
@@ -22,8 +22,9 @@ def webdriverStaterGetText(url):
 
     # 提取并清理文本
     raw_text = body_element.get_attribute("innerText")
-    cleaned_text = raw_text.replace("\n", " ")  # 合并换行符
-    return  cleaned_text
+    cleaned_text = raw_text.replace("\n", " ")
+    yield cleaned_text
+    edge.quit()  # 合并换行符
 
 @pytest.fixture()
 def webdriverStaterGetImage(url):
@@ -32,7 +33,8 @@ def webdriverStaterGetImage(url):
     images = edge.find_elements(By.TAG_NAME, 'img')
     imagePath = []
     [imagePath.append(image.get_attribute('src')) for image in images]
-    return imagePath
+    yield imagePath
+    edge.quit()
 
 @pytest.fixture()
 def webdriverStaterGetKeyword(url):
@@ -40,8 +42,8 @@ def webdriverStaterGetKeyword(url):
     edge.get(url)
     keywords = edge.find_elements(By.CLASS_NAME, 'bg-gray-700')
     keyword = [word.text for word in keywords]
-    return keyword
-
+    yield keyword
+    edge.quit()
 
 class TestAiseo:
     def testCheckImage(self, webdriverStater):
@@ -91,6 +93,7 @@ class TestAiseo:
     def testRedirectDeception(self, webdriverStater):
         print("判断重定向欺骗")
         assert antiCompliance.Redirect_deception(webdriverStater)
+        webdriverStater.quit()
 
     def testLinkWithIpqs(self, webdriverStater):
         print("判断外链作弊")

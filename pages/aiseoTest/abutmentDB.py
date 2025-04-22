@@ -6,10 +6,12 @@ import ssl
 import sys
 import os
 
+from torchvision.models import SqueezeNet1_0_Weights
+
 # MongoDB 连接
 client = MongoClient("mongodb://readuser:Read0nly!2025@13.229.95.250:27017/seo_ai")
 db = client["seo_ai"]
-collection = db["keywords"]
+collection = db["content"]
 results_col = db["check_results"]
 
 
@@ -25,57 +27,46 @@ def build_url(article_id):
 async def analyze_page(session, url, article_id):
     try:
         async with session.get(url, timeout=10, ssl=ssl_context) as resp:
-            project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+            project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
             os.chdir(project_root)
-
             test_file = "tests/test_aiseo.py"
 
             cmd = [
-                sys.executable,  # 使用当前 Python 解释器
-                "-m", "pytest",  # 调用 pytest 模块，避免直接调用命令
+                sys.executable,
+                "-m", "pytest",
                 test_file,
                 f"--url={url}",
-                "-s", "-v"
+                "-s", "-v",
             ]
 
-            print(f"执行命令: {' '.join(cmd)}")
-            result = subprocess.run(cmd, capture_output=True, text=True)
+            # ✅ 改为异步子进程执行
+            process = await asyncio.create_subprocess_exec(
+                *cmd,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+            )
+            stdout, stderr = await process.communicate()
 
-            print(result.stdout)
-            print(result.stderr)
+            print(stdout.decode())
+            if stderr:
+                print("❌ 错误输出：", stderr.decode())
 
-            # results_col.update_one(
-            #     {"article_id": article_id},
-            #     {"$set": {
-            #         "url": url,
-            #         "result": "异常" if suspicious else "正常"
-            #     }},
-            #     upsert=True
-            # )
     except Exception as e:
         print(f"❌ {url} 异常：{e}")
-        # results_col.update_one(
-        #     {"article_id": article_id},
-        #     {"$set": {
-        #         "url": url,
-        #         "result": "检测失败",
-        #         "error": str(e)
-        #     }},
-        #     upsert=True
-        # )
 
 # 协程任务调度
-async def main(batch_size=100, max_concurrent=10):
+async def main(batch_size=1, max_concurrent=3):
     skip = 0
-    while True:
-        articles = list(collection.find().skip(skip).limit(batch_size))
+    while skip < 3:
+        query = {"generated": True}
+        articles = list(collection.find(query).skip(skip).limit(batch_size))
         if not articles:
             break
         tasks = []
         connector = aiohttp.TCPConnector(limit=max_concurrent)
         async with aiohttp.ClientSession(connector=connector) as session:
             for article in articles:
-                article_id = article["keyword_sha1"]
+                article_id = article["keyword_sha256"]
                 url = build_url(article_id)
                 tasks.append(analyze_page(session, url, article_id))
             await asyncio.gather(*tasks)
