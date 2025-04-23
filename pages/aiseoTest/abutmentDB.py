@@ -6,8 +6,6 @@ import ssl
 import sys
 import os
 
-from torchvision.models import SqueezeNet1_0_Weights
-
 # MongoDB 连接
 client = MongoClient("mongodb://readuser:Read0nly!2025@13.229.95.250:27017/seo_ai")
 db = client["seo_ai"]
