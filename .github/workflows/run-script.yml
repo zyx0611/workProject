@@ -2,8 +2,7 @@ name: Run Judge SEO
 
 on:
   schedule:
-    - cron: '0 * * * *'
-    - cron: '30 * * * *'  # 每半小时运行一次（UTC 时间）
+    - cron: '0 0 * * *'# 每半小时运行一次（UTC 时间）
   workflow_dispatch:         # 也可以手动触发
 
 jobs:
@@ -32,4 +31,4 @@ jobs:
         echo "列出目录内容："
         ls -la
         echo "开始运行脚本"
-        python pages/aiseoTest/abutmentDB.py
+        python tests/test_aiseo.py

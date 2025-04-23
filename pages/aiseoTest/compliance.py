@@ -1,22 +1,41 @@
-from io import BytesIO
 
 import requests
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
-from transformers import AutoFeatureExtractor, AutoModelForImageClassification,AutoProcessor,BlipProcessor,BlipForConditionalGeneration,CLIPProcessor,CLIPModel
 from PIL import Image
 import torch
 import json
-from selenium import webdriver
 
 # 判断文章是否包含违禁词
 def JudgeLllegalWords(text):
-    tokenizer = AutoTokenizer.from_pretrained("distilbert-base-multilingual-cased")
-    model = AutoModelForSequenceClassification.from_pretrained("distilbert-base-multilingual-cased", num_labels=2)
-
-    inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True)
-    outputs = model(**inputs)
-    predicted = torch.argmax(outputs.logits, dim=1).item()
-    return predicted
+    # tokenizer = AutoTokenizer.from_pretrained("distilbert-base-multilingual-cased")
+    # model = AutoModelForSequenceClassification.from_pretrained("distilbert-base-multilingual-cased", num_labels=2)
+    #
+    # inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True)
+    # outputs = model(**inputs)
+    # predicted = torch.argmax(outputs.logits, dim=1).item()
+    categories = 'profanity,personal,link,drug,weapon,spam,content-trade,money-transaction,extremism,violence,self-harm,medical'
+    data = {
+        'text': text,
+        'mode': 'rules',
+        'lang': 'en,zh',
+        'categories': categories,
+        'api_user': '285381362',
+        'api_secret': 'yWPvsrEKjA8SuYynXGbEbvmEW5gAhhNc'
+    }
+    try:
+        r = requests.post('https://api.sightengine.com/1.0/text/check.json', data=data)
+        output = json.loads(r.text)
+        available = categories.split(',')
+        for ava in available:
+            element = output.get(ava, {})
+            matches = element.get('matches', [])
+            if len(matches) > 0:
+                for match in matches:
+                    if match.get('intensity') != 'low':
+                        return False
+        return True
+    except Exception as e:
+        print("请求报错：", e)
 
 import torchvision.transforms as T
 import numpy as np
@@ -34,6 +53,14 @@ def load_image(url_or_path):
         image = Image.open(url_or_path).convert("RGB")
     return image
 
+
+def get_final_url(url):
+    try:
+        response = requests.get(url, allow_redirects=True)
+        return response.url
+    except Exception as e:
+        return str(e)
+
 def checkImage(urlArr):
     for url in urlArr:
         response = requests.get(url, timeout=5)
@@ -46,29 +73,35 @@ def checkImage(urlArr):
 
 # 模拟 NSFW 和 horror 判断（需调用你训练好的模型）
 def detect_nsfw(image_tensor):
-    # 这里调用 nsfw_model(image_tensor) 返回标签/概率
-    # 加载模型
-    processor = AutoProcessor.from_pretrained("Falconsai/nsfw_image_detection")
-    model = AutoModelForImageClassification.from_pretrained("Falconsai/nsfw_image_detection")
+    params = {
+        'url': image_tensor,
+        'models': 'nudity-2.1',
+        'api_user': '285381362',
+        'api_secret': 'yWPvsrEKjA8SuYynXGbEbvmEW5gAhhNc'
+    }
+    try:
+        r = requests.get('https://api.sightengine.com/1.0/check.json', params=params)
 
-    # 加载图片
-    # 获取图片内容（留在内存中）
-    to_pil = T.ToPILImage()
-    image = to_pil(image_tensor.squeeze(0)).convert("RGB")
+        output = json.loads(r.text)
+        nudity = output.get("nudity", {})
 
-    # 使用 PIL 打开图片（不保存本地）
-    inputs = processor(images=image, return_tensors="pt")
-    outputs = model(**inputs)
-    probs = torch.nn.functional.softmax(outputs.logits, dim=1)
+        # 可以选择关注的字段（越靠前越严重）
+        flags = [
+            "sexual_activity",
+            "sexual_display",
+            "erotica",
+            "very_suggestive",
+            "suggestive",
+            "mildly_suggestive"
+        ]
 
-    # 输出标签和概率
-    labels = model.config.id2label
-    arr = []
-    for i, p in enumerate(probs[0]):
-        arr.append(f"{labels[i]}: {p.item():.2%}")
-        print(f"{labels[i]}: {p.item():.2%}")
+        for flag in flags:
+            if nudity.get(flag, 0) > 0.5:
+                return True  # 这张图被认为有黄内容
 
-    return arr
+        return False  # 安全
+    except Exception as e:
+        print("请求报错：", e)
 
 def detect_horror(image_tensor):
     response = requests.get(image_tensor, allow_redirects=True)
@@ -113,27 +146,12 @@ def run_all(image_path_or_url):
     ])
     img_tensor = transform(image).unsqueeze(0)
 
-    nsfw_result = detect_nsfw(img_tensor)
-    horror_result = detect_horror(image_path_or_url)
-    anomaly_result = detect_anomaly(image)
-
-    print("NSFW 检测:", nsfw_result)
-    print("恐怖图检测:", horror_result)
-    print("AI 异常检测:", anomaly_result)
-
-# 判断文章里面的图片是否违规
-def judgeLllgalImage(imageArray):
-    for image in imageArray:
-        run_all(image)
-
 def judgeNSFWImage(imageArray):
     for image in imageArray:
-       img_tensor = run_all(image)
-       nsfw_result = detect_nsfw(img_tensor)
-       for nsfw in nsfw_result:
-           key, value = nsfw.split(':')
-           if key == 'normal' and value > 50:
-               return False
+       image = get_final_url(image)
+       nsfw_result = detect_nsfw(image)
+       if not nsfw_result:
+           return False
     return True
 
 def judgeHorrorImage(imageArray):

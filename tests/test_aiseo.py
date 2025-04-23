@@ -1,9 +1,29 @@
+import csv
+
 import pytest
 from selenium.webdriver.common.by import By
 
 from pages.aiseoTest import aiseoTest, antiCompliance, compliance
 from selenium import webdriver
+import subprocess
 
+@pytest.fixture(scope="session", autouse=True)
+def generate_csv_data():
+    subprocess.run(["python", "/Users/edy/PycharmProjects/workProject/getYesterdayURL.py"])
+
+# ---------------------------
+# 工具函数：数据加载与校验
+# ---------------------------
+def load_urls_from_csv(csv_path='yesterdayURL.csv'):
+# def load_urls_from_csv(csv_path='../Utils/yesterdayURL.csv'):
+    """从无表头的CSV读取URL"""
+    with open(csv_path, 'r') as f:
+        reader = csv.reader(f)  # 不使用DictReader
+        return [row[0] for row in reader if row]  # 提取每行第一个元素
+
+# @pytest.fixture(scope="module", params=load_urls_from_csv())
+# def url(request):
+#     return request.param
 
 @pytest.fixture()
 def webdriverStater(url):
@@ -60,7 +80,7 @@ class TestAiseo:
 
     def testJudgeLllegalWords(self, webdriverStaterGetText):
         print("判断文章是否包含违禁词")
-        assert compliance.JudgeLllegalWords(webdriverStaterGetText) == 0
+        assert compliance.JudgeLllegalWords(webdriverStaterGetText)
 
     def testImageCode(self, webdriverStaterGetImage):
         print("判断图片状态码")
@@ -109,5 +129,4 @@ class TestAiseo:
 
 
 if __name__ == '__main__':
-    # pytest.main()
-    pytest.skip("Skipping original test file", allow_module_level=True)
+    pytest.main()
