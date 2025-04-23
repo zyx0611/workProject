@@ -2,7 +2,7 @@ name: Run Judge SEO
 
 on:
   schedule:
-    - cron: '0 0 * * * *'  # 每半小时运行一次（UTC 时间）
+    - cron: '0 30 * * * *'  # 每半小时运行一次（UTC 时间）
   workflow_dispatch:         # 也可以手动触发
 
 jobs:
