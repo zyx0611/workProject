@@ -21,24 +21,8 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install requests request
-        pip install requests json
-        pip install requests asyncio
-        pip install requests aiohttp
-        pip install requests pymongo
-        pip install requests subprocess
-        pip install requests ssl
-        pip install requests sys
-        pip install requests os
-        pip install requests selenium
-        pip install requests base64
-        pip install requests torch
-        pip install requests PIL
-        pip install requests transformers
-        pip install requests serpapi
-        pip install requests time
-        pip install requests difflib
-#        pip install requests
+        pip install requests
+        pip install aiohttp pymongo selenium torch pillow transformers serpapi
 
 
     - name: Run script
