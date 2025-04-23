@@ -1,41 +1,67 @@
 
 import requests
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from PIL import Image
-import torch
 import json
+from langdetect import detect
+import jieba
+
+
+def detect_language_langdetect(text):
+    try:
+        lang = detect(text)
+        return lang  # 'zh-cn' 表示中文，'en' 表示英文
+    except:
+        return "Unknown"
+
+# 加载外部违规词库
+def load_banned_words(file_path):
+    with open(file_path, 'r', encoding='utf-8') as f:
+        banned_words = f.read().splitlines()
+    return banned_words
+
+# 使用结巴进行分词检测
+def detect_banned_words(text, banned_words):
+    words = jieba.lcut(text)
+    found_words = [word for word in words if word in banned_words]
+
+    if found_words:
+        return True, found_words
+    else:
+        return False, []
 
 # 判断文章是否包含违禁词
 def JudgeLllegalWords(text):
-    # tokenizer = AutoTokenizer.from_pretrained("distilbert-base-multilingual-cased")
-    # model = AutoModelForSequenceClassification.from_pretrained("distilbert-base-multilingual-cased", num_labels=2)
-    #
-    # inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True)
-    # outputs = model(**inputs)
-    # predicted = torch.argmax(outputs.logits, dim=1).item()
-    categories = 'profanity,personal,link,drug,weapon,spam,content-trade,money-transaction,extremism,violence,self-harm,medical'
-    data = {
-        'text': text,
-        'mode': 'rules',
-        'lang': 'en,zh',
-        'categories': categories,
-        'api_user': '285381362',
-        'api_secret': 'yWPvsrEKjA8SuYynXGbEbvmEW5gAhhNc'
-    }
-    try:
-        r = requests.post('https://api.sightengine.com/1.0/text/check.json', data=data)
-        output = json.loads(r.text)
-        available = categories.split(',')
-        for ava in available:
-            element = output.get(ava, {})
-            matches = element.get('matches', [])
-            if len(matches) > 0:
-                for match in matches:
-                    if match.get('intensity') != 'low':
-                        return False
-        return True
-    except Exception as e:
-        print("请求报错：", e)
+    langdetect = detect_language_langdetect(text)
+    if langdetect == 'zh-cn':
+        # 加载违规词库
+        banned_words = load_banned_words('utils/色情类.txt')
+        # 检测是否有违禁词
+        is_banned, banned_found = detect_banned_words(text, banned_words)
+        return is_banned
+    else:
+        categories = 'profanity,personal,link,drug,weapon,spam,content-trade,money-transaction,extremism,violence,self-harm,medical'
+        data = {
+            'text': text,
+            'mode': 'rules',
+            'lang': 'en',
+            'categories': categories,
+            'api_user': '285381362',
+            'api_secret': 'yWPvsrEKjA8SuYynXGbEbvmEW5gAhhNc'
+        }
+        try:
+            r = requests.post('https://api.sightengine.com/1.0/text/check.json', data=data)
+            output = json.loads(r.text)
+            available = categories.split(',')
+            for ava in available:
+                element = output.get(ava, {})
+                matches = element.get('matches', [])
+                if len(matches) > 0:
+                    for match in matches:
+                        if match.get('intensity') != 'low':
+                            return False
+            return True
+        except Exception as e:
+            print("请求报错：", e)
 
 import torchvision.transforms as T
 import numpy as np

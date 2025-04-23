@@ -2,6 +2,7 @@ import csv
 
 import pytest
 from selenium.webdriver.common.by import By
+from selenium.webdriver.edge.options import Options
 
 from pages.aiseoTest import aiseoTest, antiCompliance, compliance
 from selenium import webdriver
@@ -26,17 +27,24 @@ def load_urls_from_csv(csv_path='yesterdayURL.csv'):
 #     return request.param
 
 @pytest.fixture()
-def webdriverStater(url):
-    edge = webdriver.Edge()
+def edge(url):
+    options = Options()
+    options.add_argument('--headless')  # 设置为无头模式
+    options.add_argument('--disable-gpu')  # 禁用GPU加速（可选）
+    options.add_argument('--window-size=1920x1080')
+    edge = webdriver.Edge(options=options)
     edge.get(url)
+    return edge
+
+
+@pytest.fixture()
+def webdriverStater(edge):
     yield edge
     edge.quit()
 
 
 @pytest.fixture()
-def webdriverStaterGetText(url):
-    edge = webdriver.Edge()
-    edge.get(url)
+def webdriverStaterGetText(edge):
     # 定位正文元素（根据实际情况调整选择器）
     body_element = edge.find_element(By.CLASS_NAME, "markdown-content")
 
@@ -47,9 +55,7 @@ def webdriverStaterGetText(url):
     edge.quit()  # 合并换行符
 
 @pytest.fixture()
-def webdriverStaterGetImage(url):
-    edge = webdriver.Edge()
-    edge.get(url)
+def webdriverStaterGetImage(edge):
     images = edge.find_elements(By.TAG_NAME, 'img')
     imagePath = []
     [imagePath.append(image.get_attribute('src')) for image in images]
@@ -57,9 +63,7 @@ def webdriverStaterGetImage(url):
     edge.quit()
 
 @pytest.fixture()
-def webdriverStaterGetKeyword(url):
-    edge = webdriver.Edge()
-    edge.get(url)
+def webdriverStaterGetKeyword(edge):
     keywords = edge.find_elements(By.CLASS_NAME, 'bg-gray-700')
     keyword = [word.text for word in keywords]
     yield keyword
