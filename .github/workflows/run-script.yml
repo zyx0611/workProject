@@ -21,7 +21,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install requests requst
+        pip install requests request
         pip install requests json
         pip install requests asyncio
         pip install requests aiohttp
