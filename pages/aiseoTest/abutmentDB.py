@@ -37,6 +37,7 @@ async def analyze_page(session, url, article_id):
                 test_file,
                 f"--url={url}",
                 "-s", "-v",
+                "--alluredir=allure-results",
             ]
 
             # ✅ 改为异步子进程执行
