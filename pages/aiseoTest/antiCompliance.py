@@ -39,6 +39,21 @@ def check_duplicate_by_search(text, threshold=0.5):
     else:
         return True
 
+# ======= 查重工具 =======
+def is_plagiarized(text):
+    try:
+        response = requests.post(
+            "https://seo-ai-backend.infohivehub.com/api/check-plagiarism",
+            json={"text": text},
+            timeout=10
+        )
+        response.raise_for_status()
+        result = response.json()
+        return result.get("similarity", 0.0)  # 假设API返回 { similarity: 0.82 }
+    except Exception as e:
+        print(f"[查重API错误] {e}")
+        return 0.0
+
 # 重定向欺骗
 def Redirect_deception(edge):
     pageSource = edge.page_source

@@ -8,9 +8,9 @@ from pages.aiseoTest import aiseoTest, antiCompliance, compliance
 from selenium import webdriver
 import subprocess
 
-@pytest.fixture(scope="session", autouse=True)
-def generate_csv_data():
-    subprocess.run(["python", "/Users/edy/PycharmProjects/workProject/getYesterdayURL.py"])
+# @pytest.fixture(scope="session", autouse=True)
+# def generate_csv_data():
+#     subprocess.run(["python", "/Users/edy/PycharmProjects/workProject/getYesterdayURL.py"])
 
 # ---------------------------
 # 工具函数：数据加载与校验
@@ -78,9 +78,9 @@ class TestAiseo:
         print('测试文章和关键字的关系')
         assert aiseoTest.checkTextAndKeyword(webdriverStater)
 
-    def testCheckTextAndImage(self, webdriverStater):
+    def testCheckTextAndImage(self, webdriverStaterGetText,webdriverStaterGetImage):
         print('测试文章和图片的关系')
-        assert aiseoTest.checkTextAndImage(webdriverStater)
+        assert aiseoTest.checkTextAndImage(webdriverStaterGetText,webdriverStaterGetImage)
 
     def testJudgeLllegalWords(self, webdriverStaterGetText):
         print("判断文章是否包含违禁词")
@@ -112,7 +112,8 @@ class TestAiseo:
 
     def testDuplicateBySearch(self, webdriverStaterGetText):
         print("判断文章是否伪原创")
-        assert antiCompliance.check_duplicate_by_search(webdriverStaterGetText)
+        # assert antiCompliance.check_duplicate_by_search(webdriverStaterGetText)
+        assert antiCompliance.is_plagiarized(webdriverStaterGetText)
 
     def testRedirectDeception(self, webdriverStater):
         print("判断重定向欺骗")

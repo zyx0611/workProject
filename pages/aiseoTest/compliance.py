@@ -25,18 +25,19 @@ def detect_banned_words(text, banned_words):
     found_words = [word for word in words if word in banned_words]
 
     if found_words:
-        return True, found_words
+        return False, found_words
     else:
-        return False, []
+        return True, []
 
 # 判断文章是否包含违禁词
 def JudgeLllegalWords(text):
     langdetect = detect_language_langdetect(text)
     if langdetect == 'zh-cn':
         # 加载违规词库
-        banned_words = load_banned_words('utils/色情类.txt')
+        banned_words = load_banned_words('../utils/色情类.txt')
         # 检测是否有违禁词
         is_banned, banned_found = detect_banned_words(text, banned_words)
+        print("违规词：", banned_found)
         return is_banned
     else:
         categories = 'profanity,personal,link,drug,weapon,spam,content-trade,money-transaction,extremism,violence,self-harm,medical'
@@ -161,22 +162,11 @@ def detect_anomaly(image):
             return "Possibly abnormal (extra limbs)"
     return "Normal"
 
-# 主函数
-def run_all(image_path_or_url):
-    image = load_image(image_path_or_url)
-
-    # 转为tensor（供其他模型使用）
-    transform = T.Compose([
-        T.Resize((224, 224)),
-        T.ToTensor()
-    ])
-    img_tensor = transform(image).unsqueeze(0)
-
 def judgeNSFWImage(imageArray):
     for image in imageArray:
        image = get_final_url(image)
        nsfw_result = detect_nsfw(image)
-       if not nsfw_result:
+       if nsfw_result:
            return False
     return True
 
