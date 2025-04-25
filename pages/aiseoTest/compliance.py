@@ -4,6 +4,7 @@ from PIL import Image
 import json
 from langdetect import detect
 import jieba
+from bs4 import BeautifulSoup
 
 
 def detect_language_langdetect(text):
@@ -232,7 +233,7 @@ def matchKeyword(text, keywords):
 
 # 查看H结构是否正常
 from selenium.webdriver.common.by import By
-def analyze_headings_with_selenium(edge):
+def analyze_headings_with_selenium(edge, cleaned_text):
     try:
         headings = []
         for level in range(1, 7):
@@ -260,6 +261,18 @@ def analyze_headings_with_selenium(edge):
                 return False
             print(f"  {tag.upper()}: {text}")
             last_level = level
-        return True
     finally:
-        print()
+        soup = BeautifulSoup(cleaned_text, "html.parser")
+        title_tag = soup.find("title")
+        title_text = title_tag.text.strip() if title_tag else ""
+        length = len(title_text)
+        print(f"\n[Meta Title] 长度: {length} 字符，内容：{title_text}")
+        if not (title_tag and 10 <= length <= 60):
+            return False
+        desc_tag = soup.find("meta", attrs={"name": "description"})
+        desc = desc_tag.get("content", "") if desc_tag else ""
+        length = len(desc.strip())
+        print(f"\n[Meta Description] 长度: {length} 字符，内容：{desc.strip()}")
+        if not (desc_tag is not None and 50 <= length <= 160):
+            return False
+        return True

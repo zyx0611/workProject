@@ -2,9 +2,9 @@
 import csv
 
 
-def pytest_generate_tests(metafunc):
-    if 'url' in metafunc.fixturenames:
-        with open('yesterdayURL.csv', 'r') as f:
-            reader = csv.reader(f)
-            urls = [row[0] for row in reader if row]
-        metafunc.parametrize("url", urls)
+# def pytest_generate_tests(metafunc):
+#     if 'url' in metafunc.fixturenames:
+#         with open('../utils/yesterdayURL.csv', 'r') as f:
+#             reader = csv.reader(f)
+#             urls = [row[0] for row in reader if row]
+#         metafunc.parametrize("url", urls)
