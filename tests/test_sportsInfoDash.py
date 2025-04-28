@@ -5,34 +5,6 @@ from pages.sportsInfoDashTest import sportsInfo
 from selenium.webdriver.edge.options import Options
 from selenium import webdriver
 
-# 基础指标
-# title
-# 是否包含关键词
-# 是否有设置title标签
-# 是否有设置h1标签的标题
-# description
-# 是否包含关键词
-# 是否能表达当前网页的摘要
-# 是否在120-160字符之间
-# keywords
-# 聚焦网页主要内容
-# slug
-# 网页唯一的可访问标识
-# 足够语义化
-# Canonical
-# 可被搜索引擎引用的最佳URL（设置当前网页url即可，最权威）
-# img
-# 是否包含有图片嵌入（满足友好阅读体验）
-# 重要指标
-# 网页结构化
-# 是否包含多级标签「h1, h2, h3...」
-# 是否包含多个段落
-# 关键词密度
-# 各级标题中是否分布有「关键词、近义词」
-# 各个段落中是否有多次出现「关键词、近义词」
-# 外链
-# 外链是否与当前页面具有相关性
-# 外链是否能正常访问
 
 def load_urls_from_csv(csv_path='../utils/sportsInfoURL.csv'):
     """从无表头的CSV读取URL"""
@@ -57,14 +29,49 @@ def chrome(url):
 
 class Test:
     @allure.suite("体育信息")
-    @allure.title("sprotsInfo: {url}")
+    @allure.title("sports_info: {url}")
     @allure.story("跳转问题")
-    def test_JumpProblem(self, url, chrome):
-        assert sportsInfo.jumpProblem(url, chrome)
+    def test_jump_problem(self, url, chrome):
+        assert sportsInfo.jump_problem(url, chrome)
 
     @allure.suite("体育信息")
-    @allure.title("sprotsInfo: {url}")
+    @allure.title("sports_info: {url}")
     @allure.story("关键字对比")
-    def test_JumpProblem(self, url, chrome):
-        assert sportsInfo.keyWordsContrast(url, chrome)
+    def test_keywords_contrast(self, url, chrome):
+        assert sportsInfo.keywords_contrast_and_title(url, chrome)
 
+    @allure.suite("体育信息")
+    @allure.title("sports_info: {url}")
+    @allure.story("h1标签")
+    def test_h1(self, url, chrome):
+        assert sportsInfo.find_h1(chrome)
+
+    @allure.suite("体育信息")
+    @allure.title("sports_info: {url}")
+    @allure.story("description是否包含关键词")
+    def test_description_keywords(self, url, chrome):
+        assert sportsInfo.description_keywords(chrome)
+
+    @allure.suite("体育信息")
+    @allure.title("sports_info: {url}")
+    @allure.story("description是否包含关键词")
+    def test_description_keywords(self, url, chrome):
+        assert sportsInfo.description_keywords(chrome)
+
+    @allure.suite("体育信息")
+    @allure.title("sports_info: {url}")
+    @allure.story("是否包含有图片嵌入")
+    def test_check_img(self, url, chrome):
+        assert sportsInfo.check_img(chrome)
+
+    @allure.suite("体育信息")
+    @allure.title("sports_info: {url}")
+    @allure.story("检查文章是否包含多个段落")
+    def test_check_paragraph(self, url, chrome):
+        assert sportsInfo.check_paragraph(chrome)
+
+    @allure.suite("体育信息")
+    @allure.title("sports_info: {url}")
+    @allure.story("keywords聚焦网页主要内容")
+    def test_keywords_in_webpage(self, url, chrome):
+        assert sportsInfo.check_keywords_in_webpage(chrome)

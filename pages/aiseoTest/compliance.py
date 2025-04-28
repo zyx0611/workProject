@@ -125,6 +125,7 @@ def detect_nsfw(image_tensor):
 
         for flag in flags:
             if nudity.get(flag, 0) > 0.5:
+                print(f'该图片{flag}指数过高！')
                 return True  # 这张图被认为有黄内容
 
         return False  # 安全

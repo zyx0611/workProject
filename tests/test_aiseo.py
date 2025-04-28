@@ -1,5 +1,7 @@
 import csv
-
+import io
+import sys
+import logging
 import pytest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.edge.options import Options
@@ -77,7 +79,21 @@ class TestAiseo:
     def testCheckImage(self, webdriverStater, url):
         print("测试图片")
         allure.dynamic.feature(url)
-        assert aiseoTest.checkImage(webdriverStater)
+        captured_output = io.StringIO()
+        sys.stdout = captured_output  # 重定向print输出到captured_output
+        try:
+            assert aiseoTest.checkImage(webdriverStater)
+        except AssertionError as e:
+            # 捕获到失败
+            sys.stdout = sys.__stdout__  # 恢复标准输出
+
+            printed_logs = captured_output.getvalue()  # 获取之前所有print的内容
+            error_message = f"断言失败: {str(e)}\n打印日志:\n{printed_logs}"
+            print(error_message)  # 也可以只log
+            logging.error(error_message)
+            raise  # 最后记得继续抛出，让pytest知道是失败
+        finally:
+            sys.stdout = sys.__stdout__
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
@@ -85,7 +101,22 @@ class TestAiseo:
     def testCheckTextAndKeyword(self, webdriverStater, url):
         print('测试文章和关键字的关系')
         allure.dynamic.feature(url)
-        assert aiseoTest.checkTextAndKeyword(webdriverStater)
+        captured_output = io.StringIO()
+        sys.stdout = captured_output  # 重定向print输出到captured_output
+        try:
+            assert aiseoTest.checkTextAndKeyword(webdriverStater)
+        except AssertionError as e:
+            # 捕获到失败
+            sys.stdout = sys.__stdout__  # 恢复标准输出
+
+            printed_logs = captured_output.getvalue()  # 获取之前所有print的内容
+            error_message = f"断言失败: {str(e)}\n打印日志:\n{printed_logs}"
+            print(error_message)  # 也可以只log
+            logging.error(error_message)
+            raise  # 最后记得继续抛出，让pytest知道是失败
+        finally:
+            sys.stdout = sys.__stdout__
+
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
@@ -93,7 +124,22 @@ class TestAiseo:
     def testCheckTextAndImage(self, webdriverStaterGetText, url,webdriverStaterGetImage):
         print('测试文章和图片的关系')
         allure.dynamic.feature(url)
-        assert aiseoTest.checkTextAndImage(webdriverStaterGetText,webdriverStaterGetImage)
+        captured_output = io.StringIO()
+        sys.stdout = captured_output  # 重定向print输出到captured_output
+        try:
+            assert aiseoTest.checkTextAndImage(webdriverStaterGetText,webdriverStaterGetImage)
+        except AssertionError as e:
+            # 捕获到失败
+            sys.stdout = sys.__stdout__  # 恢复标准输出
+
+            printed_logs = captured_output.getvalue()  # 获取之前所有print的内容
+            error_message = f"断言失败: {str(e)}\n打印日志:\n{printed_logs}"
+            print(error_message)  # 也可以只log
+            logging.error(error_message)
+            raise  # 最后记得继续抛出，让pytest知道是失败
+        finally:
+            sys.stdout = sys.__stdout__
+
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
@@ -101,7 +147,22 @@ class TestAiseo:
     def testJudgeLllegalWords(self, webdriverStaterGetText, url):
         print("判断文章是否包含违禁词")
         allure.dynamic.feature(url)
-        assert compliance.JudgeLllegalWords(webdriverStaterGetText)
+        captured_output = io.StringIO()
+        sys.stdout = captured_output  # 重定向print输出到captured_output
+        try:
+            assert compliance.JudgeLllegalWords(webdriverStaterGetText)
+        except AssertionError as e:
+            # 捕获到失败
+            sys.stdout = sys.__stdout__  # 恢复标准输出
+
+            printed_logs = captured_output.getvalue()  # 获取之前所有print的内容
+            error_message = f"断言失败: {str(e)}\n打印日志:\n{printed_logs}"
+            print(error_message)  # 也可以只log
+            logging.error(error_message)
+            raise  # 最后记得继续抛出，让pytest知道是失败
+        finally:
+            sys.stdout = sys.__stdout__
+
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
@@ -109,7 +170,22 @@ class TestAiseo:
     def testImageCode(self, webdriverStaterGetImage, url):
         print("判断图片状态码")
         allure.dynamic.feature(url)
-        assert compliance.checkImage(webdriverStaterGetImage)
+        captured_output = io.StringIO()
+        sys.stdout = captured_output  # 重定向print输出到captured_output
+        try:
+            assert compliance.checkImage(webdriverStaterGetImage)
+        except AssertionError as e:
+            # 捕获到失败
+            sys.stdout = sys.__stdout__  # 恢复标准输出
+
+            printed_logs = captured_output.getvalue()  # 获取之前所有print的内容
+            error_message = f"断言失败: {str(e)}\n打印日志:\n{printed_logs}"
+            print(error_message)  # 也可以只log
+            logging.error(error_message)
+            raise  # 最后记得继续抛出，让pytest知道是失败
+        finally:
+            sys.stdout = sys.__stdout__
+
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
@@ -118,7 +194,22 @@ class TestAiseo:
         print("判断图片是否包含黄色内容")
         # 动态设置 feature 名称为当前 URL
         allure.dynamic.feature(url)
-        assert compliance.judgeNSFWImage(webdriverStaterGetImage)
+        captured_output = io.StringIO()
+        sys.stdout = captured_output  # 重定向print输出到captured_output
+        try:
+            assert compliance.judgeNSFWImage(webdriverStaterGetImage)
+        except AssertionError as e:
+            # 捕获到失败
+            sys.stdout = sys.__stdout__  # 恢复标准输出
+
+            printed_logs = captured_output.getvalue()  # 获取之前所有print的内容
+            error_message = f"断言失败: {str(e)}\n打印日志:\n{printed_logs}"
+            print(error_message)  # 也可以只log
+            logging.error(error_message)
+            raise  # 最后记得继续抛出，让pytest知道是失败
+        finally:
+            sys.stdout = sys.__stdout__
+
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
@@ -127,7 +218,22 @@ class TestAiseo:
         print("判断图片是否包含恐怖内容")
         # 动态设置 feature 名称为当前 URL
         allure.dynamic.feature(url)
-        assert compliance.judgeHorrorImage(webdriverStaterGetImage)
+        captured_output = io.StringIO()
+        sys.stdout = captured_output  # 重定向print输出到captured_output
+        try:
+            assert compliance.judgeHorrorImage(webdriverStaterGetImage)
+        except AssertionError as e:
+            # 捕获到失败
+            sys.stdout = sys.__stdout__  # 恢复标准输出
+
+            printed_logs = captured_output.getvalue()  # 获取之前所有print的内容
+            error_message = f"断言失败: {str(e)}\n打印日志:\n{printed_logs}"
+            print(error_message)  # 也可以只log
+            logging.error(error_message)
+            raise  # 最后记得继续抛出，让pytest知道是失败
+        finally:
+            sys.stdout = sys.__stdout__
+
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
@@ -136,7 +242,21 @@ class TestAiseo:
         print("判断图片是否是AI错图")
         # 动态设置 feature 名称为当前 URL
         allure.dynamic.feature(url)
-        assert compliance.judgeAnomalyImage(webdriverStaterGetImage)
+        captured_output = io.StringIO()
+        sys.stdout = captured_output  # 重定向print输出到captured_output
+        try:
+            assert compliance.judgeAnomalyImage(webdriverStaterGetImage)
+        except AssertionError as e:
+            # 捕获到失败
+            sys.stdout = sys.__stdout__  # 恢复标准输出
+
+            printed_logs = captured_output.getvalue()  # 获取之前所有print的内容
+            error_message = f"断言失败: {str(e)}\n打印日志:\n{printed_logs}"
+            print(error_message)  # 也可以只log
+            logging.error(error_message)
+            raise  # 最后记得继续抛出，让pytest知道是失败
+        finally:
+            sys.stdout = sys.__stdout__
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
@@ -145,14 +265,45 @@ class TestAiseo:
         print("判断网页结构是否正常")
         # 动态设置 feature 名称为当前 URL
         allure.dynamic.feature(url)
-        assert compliance.analyze_headings_with_selenium(webdriverStater, webdriverStaterGetText)
+        captured_output = io.StringIO()
+        sys.stdout = captured_output  # 重定向print输出到captured_output
+        try:
+            assert compliance.analyze_headings_with_selenium(webdriverStater, webdriverStaterGetText)
+        except AssertionError as e:
+            # 捕获到失败
+            sys.stdout = sys.__stdout__  # 恢复标准输出
+
+            printed_logs = captured_output.getvalue()  # 获取之前所有print的内容
+            error_message = f"断言失败: {str(e)}\n打印日志:\n{printed_logs}"
+            print(error_message)  # 也可以只log
+            logging.error(error_message)
+            raise  # 最后记得继续抛出，让pytest知道是失败
+        finally:
+            sys.stdout = sys.__stdout__
+
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
     @allure.story("判断关键字密度")
     def testMatchKeyword(self, webdriverStaterGetText, url, webdriverStaterGetKeyword):
         print("判断关键字密度")
-        assert compliance.matchKeyword(webdriverStaterGetText, webdriverStaterGetKeyword)
+        allure.dynamic.feature(url)
+        captured_output = io.StringIO()
+        sys.stdout = captured_output  # 重定向print输出到captured_output
+        try:
+            assert compliance.matchKeyword(webdriverStaterGetText, webdriverStaterGetKeyword)
+        except AssertionError as e:
+            # 捕获到失败
+            sys.stdout = sys.__stdout__  # 恢复标准输出
+
+            printed_logs = captured_output.getvalue()  # 获取之前所有print的内容
+            error_message = f"断言失败: {str(e)}\n打印日志:\n{printed_logs}"
+            print(error_message)  # 也可以只log
+            logging.error(error_message)
+            raise  # 最后记得继续抛出，让pytest知道是失败
+        finally:
+            sys.stdout = sys.__stdout__
+
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
@@ -161,7 +312,22 @@ class TestAiseo:
         print("判断文章是否伪原创")
         allure.dynamic.feature(url)
         # assert antiCompliance.check_duplicate_by_search(webdriverStaterGetText)
-        assert antiCompliance.is_plagiarized(webdriverStaterGetText)
+        captured_output = io.StringIO()
+        sys.stdout = captured_output  # 重定向print输出到captured_output
+        try:
+            assert antiCompliance.is_plagiarized(webdriverStaterGetText)
+        except AssertionError as e:
+            # 捕获到失败
+            sys.stdout = sys.__stdout__  # 恢复标准输出
+
+            printed_logs = captured_output.getvalue()  # 获取之前所有print的内容
+            error_message = f"断言失败: {str(e)}\n打印日志:\n{printed_logs}"
+            print(error_message)  # 也可以只log
+            logging.error(error_message)
+            raise  # 最后记得继续抛出，让pytest知道是失败
+        finally:
+            sys.stdout = sys.__stdout__
+
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
@@ -169,8 +335,22 @@ class TestAiseo:
     def testRedirectDeception(self, webdriverStater, url):
         print("判断重定向欺骗")
         allure.dynamic.feature(url)
-        assert antiCompliance.Redirect_deception(webdriverStater)
-        webdriverStater.quit()
+        captured_output = io.StringIO()
+        sys.stdout = captured_output  # 重定向print输出到captured_output
+        try:
+            assert antiCompliance.Redirect_deception(webdriverStater)
+        except AssertionError as e:
+            # 捕获到失败
+            sys.stdout = sys.__stdout__  # 恢复标准输出
+
+            printed_logs = captured_output.getvalue()  # 获取之前所有print的内容
+            error_message = f"断言失败: {str(e)}\n打印日志:\n{printed_logs}"
+            print(error_message)  # 也可以只log
+            logging.error(error_message)
+            raise  # 最后记得继续抛出，让pytest知道是失败
+        finally:
+            sys.stdout = sys.__stdout__
+
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
@@ -178,7 +358,22 @@ class TestAiseo:
     def testLinkWithIpqs(self, webdriverStater, url):
         print("判断外链作弊")
         allure.dynamic.feature(url)
-        assert antiCompliance.analyze_links(webdriverStater)
+        captured_output = io.StringIO()
+        sys.stdout = captured_output  # 重定向print输出到captured_output
+        try:
+            assert antiCompliance.analyze_links(webdriverStater)
+        except AssertionError as e:
+            # 捕获到失败
+            sys.stdout = sys.__stdout__  # 恢复标准输出
+
+            printed_logs = captured_output.getvalue()  # 获取之前所有print的内容
+            error_message = f"断言失败: {str(e)}\n打印日志:\n{printed_logs}"
+            print(error_message)  # 也可以只log
+            logging.error(error_message)
+            raise  # 最后记得继续抛出，让pytest知道是失败
+        finally:
+            sys.stdout = sys.__stdout__
+
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
@@ -186,7 +381,22 @@ class TestAiseo:
     def testCheckCloaking(self, webdriverStater, url):
         print("判断cloaking欺骗")
         allure.dynamic.feature(url)
-        assert antiCompliance.check_cloaking(webdriverStater.current_url)
+        captured_output = io.StringIO()
+        sys.stdout = captured_output  # 重定向print输出到captured_output
+        try:
+            assert antiCompliance.check_cloaking(webdriverStater.current_url)
+        except AssertionError as e:
+            # 捕获到失败
+            sys.stdout = sys.__stdout__  # 恢复标准输出
+
+            printed_logs = captured_output.getvalue()  # 获取之前所有print的内容
+            error_message = f"断言失败: {str(e)}\n打印日志:\n{printed_logs}"
+            print(error_message)  # 也可以只log
+            logging.error(error_message)
+            raise  # 最后记得继续抛出，让pytest知道是失败
+        finally:
+            sys.stdout = sys.__stdout__
+
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
@@ -194,8 +404,21 @@ class TestAiseo:
     def testAnalyzeKeywordStuffingWithDensity(self, webdriverStater, url):
         print("测试关键词堆叠")
         allure.dynamic.feature(url)
-        assert antiCompliance.analyze_keyword_stuffing_with_density(webdriverStater.current_url)
+        captured_output = io.StringIO()
+        sys.stdout = captured_output  # 重定向print输出到captured_output
+        try:
+            assert antiCompliance.analyze_keyword_stuffing_with_density(webdriverStater.current_url)
+        except AssertionError as e:
+            # 捕获到失败
+            sys.stdout = sys.__stdout__  # 恢复标准输出
 
+            printed_logs = captured_output.getvalue()  # 获取之前所有print的内容
+            error_message = f"断言失败: {str(e)}\n打印日志:\n{printed_logs}"
+            print(error_message)  # 也可以只log
+            logging.error(error_message)
+            raise  # 最后记得继续抛出，让pytest知道是失败
+        finally:
+            sys.stdout = sys.__stdout__
 
 if __name__ == '__main__':
     pytest.main()
