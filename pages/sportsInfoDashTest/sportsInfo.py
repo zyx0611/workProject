@@ -108,3 +108,5 @@ def check_keywords_in_webpage(chrome):
         return False
     return True
 
+def check_slug_access_identifier(chrome):
+    print('待完善')
