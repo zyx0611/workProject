@@ -18,8 +18,8 @@ import subprocess
 # ---------------------------
 # 工具函数：数据加载与校验
 # ---------------------------
-# def load_urls_from_csv(csv_path='yesterdayURL.csv'):
-def load_urls_from_csv(csv_path='Utils/yesterdayURL.csv'):
+def load_urls_from_csv(csv_path='../utils/yesterdayURL.csv'):
+# def load_urls_from_csv(csv_path='Utils/yesterdayURL.csv'):
     """从无表头的CSV读取URL"""
     with open(csv_path, 'r') as f:
         reader = csv.reader(f)  # 不使用DictReader
@@ -75,7 +75,7 @@ def webdriverStaterGetKeyword(edge):
 class TestAiseo:
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
-    @allure.story("测试图片")
+    @allure.story("文章合规检测——测试图片")
     def testCheckImage(self, webdriverStater, url):
         print("测试图片")
         allure.dynamic.feature(url)
@@ -97,7 +97,7 @@ class TestAiseo:
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
-    @allure.story("测试文章和关键字的关系")
+    @allure.story("文章合规检测——测试文章和关键字的关系")
     def testCheckTextAndKeyword(self, webdriverStater, url):
         print('测试文章和关键字的关系')
         allure.dynamic.feature(url)
@@ -120,7 +120,7 @@ class TestAiseo:
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
-    @allure.story("测试文章和图片的关系")
+    @allure.story("文章合规检测——测试文章和图片的关系")
     def testCheckTextAndImage(self, webdriverStaterGetText, url,webdriverStaterGetImage):
         print('测试文章和图片的关系')
         allure.dynamic.feature(url)
@@ -143,7 +143,7 @@ class TestAiseo:
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
-    @allure.story("判断文章是否包含违禁词")
+    @allure.story("文章合规检测——判断文章是否包含违禁词")
     def testJudgeLllegalWords(self, webdriverStaterGetText, url):
         print("判断文章是否包含违禁词")
         allure.dynamic.feature(url)
@@ -166,7 +166,7 @@ class TestAiseo:
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
-    @allure.story("判断图片状态码")
+    @allure.story("文章合规检测——判断图片状态码")
     def testImageCode(self, webdriverStaterGetImage, url):
         print("判断图片状态码")
         allure.dynamic.feature(url)
@@ -189,7 +189,7 @@ class TestAiseo:
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
-    @allure.story("判断图片是否包含黄色内容")
+    @allure.story("文章合规检测——判断图片是否包含黄色内容")
     def testjudgeNSFWImage(self, webdriverStaterGetImage, url):
         print("判断图片是否包含黄色内容")
         # 动态设置 feature 名称为当前 URL
@@ -213,7 +213,7 @@ class TestAiseo:
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
-    @allure.story("判断图片是否包含恐怖内容")
+    @allure.story("文章合规检测——判断图片是否包含恐怖内容")
     def testHorrorImage(self, webdriverStaterGetImage, url):
         print("判断图片是否包含恐怖内容")
         # 动态设置 feature 名称为当前 URL
@@ -237,7 +237,7 @@ class TestAiseo:
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
-    @allure.story("判断图片是否是AI错图")
+    @allure.story("文章合规检测——判断图片是否是AI错图")
     def testAnomalyImage(self, webdriverStaterGetImage, url):
         print("判断图片是否是AI错图")
         # 动态设置 feature 名称为当前 URL
@@ -260,7 +260,7 @@ class TestAiseo:
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
-    @allure.story("判断网页结构是否正常")
+    @allure.story("文章合规检测——判断网页结构是否正常")
     def testAnalyzeHeadingsWithSelenium(self,url, webdriverStater,webdriverStaterGetText):
         print("判断网页结构是否正常")
         # 动态设置 feature 名称为当前 URL
@@ -284,7 +284,7 @@ class TestAiseo:
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
-    @allure.story("判断关键字密度")
+    @allure.story("文章合规检测——判断关键字密度")
     def testMatchKeyword(self, webdriverStaterGetText, url, webdriverStaterGetKeyword):
         print("判断关键字密度")
         allure.dynamic.feature(url)
@@ -307,7 +307,7 @@ class TestAiseo:
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
-    @allure.story("判断文章是否伪原创")
+    @allure.story("文章逆合规检测——判断文章是否伪原创")
     def testDuplicateBySearch(self, webdriverStaterGetText, url):
         print("判断文章是否伪原创")
         allure.dynamic.feature(url)
@@ -331,7 +331,7 @@ class TestAiseo:
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
-    @allure.story("判断重定向欺骗")
+    @allure.story("文章逆合规检测——判断重定向欺骗")
     def testRedirectDeception(self, webdriverStater, url):
         print("判断重定向欺骗")
         allure.dynamic.feature(url)
@@ -354,7 +354,7 @@ class TestAiseo:
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
-    @allure.story("判断外链作弊")
+    @allure.story("文章逆合规检测——判断外链作弊")
     def testLinkWithIpqs(self, webdriverStater, url):
         print("判断外链作弊")
         allure.dynamic.feature(url)
@@ -377,7 +377,7 @@ class TestAiseo:
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
-    @allure.story("判断cloaking欺骗")
+    @allure.story("文章逆合规检测——判断cloaking欺骗")
     def testCheckCloaking(self, webdriverStater, url):
         print("判断cloaking欺骗")
         allure.dynamic.feature(url)
@@ -400,7 +400,7 @@ class TestAiseo:
 
     @allure.suite("AI SEO 合规检测")
     @allure.title("文本合规检查: {url}")
-    @allure.story("测试关键词堆叠")
+    @allure.story("文章逆合规检测——测试关键词堆叠")
     def testAnalyzeKeywordStuffingWithDensity(self, webdriverStater, url):
         print("测试关键词堆叠")
         allure.dynamic.feature(url)

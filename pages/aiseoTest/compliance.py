@@ -1,11 +1,63 @@
-
+import csv
 import requests
 from PIL import Image
 import json
 from langdetect import detect
 import jieba
 from bs4 import BeautifulSoup
+import time
 
+class APIRequester:
+    def __init__(self):
+        with open('../utils/sightengineApikey.csv', 'r') as f:
+            reader = csv.reader(f)
+            api_keys = [row[0] for row in reader if row]
+        self.api_keys = api_keys
+        self.index = 0
+
+    def get_current_key(self):
+        if self.index >= len(self.api_keys):
+            return None
+        return self.api_keys[self.index]
+
+    def switch_key(self):
+        self.index += 1
+
+    def make_request(self, url, params=None, headers=None):
+        retries = 0
+        max_retries = len(self.api_keys)
+        while retries < max_retries and self.index < len(self.api_keys):
+            api_key = self.get_current_key()
+            print(f"使用apikey: {api_key}")
+
+            # 更新header加上apikey（根据你的接口调整）
+            if headers is None:
+                headers = {}
+            headers['Authorization'] = f"Bearer {api_key}"
+
+            api_key_arr = api_key.split('-')
+            params['api_user'] = api_key_arr[0]
+            params['api_secret'] = api_key_arr[1]
+
+            try:
+                if 'text' in params :
+                    response = requests.get(url, data=params, headers=headers, timeout=10)
+                else :
+                    response = requests.get(url, params=params, headers=headers, timeout=10)
+                if response.status_code == 200:
+                    return response.json()
+                else:
+                    print(f"⚠️ 接口返回错误 {response.status_code}，尝试更换API Key...")
+                    self.switch_key()
+                    retries += 1
+                    time.sleep(1)  # 防止频繁请求被封
+            except Exception as e:
+                print(f"❌ 请求异常: {e}，尝试更换API Key...")
+                self.switch_key()
+                retries += 1
+                time.sleep(1)
+
+        raise Exception("❌ 所有API Key都不可用或重试失败")
 
 def detect_language_langdetect(text):
     try:
@@ -47,12 +99,14 @@ def JudgeLllegalWords(text):
             'mode': 'rules',
             'lang': 'en',
             'categories': categories,
-            'api_user': '285381362',
-            'api_secret': 'yWPvsrEKjA8SuYynXGbEbvmEW5gAhhNc'
+            'api_user': '',
+            'api_secret': ''
         }
         try:
-            r = requests.post('https://api.sightengine.com/1.0/text/check.json', data=data)
-            output = json.loads(r.text)
+            url = 'https://api.sightengine.com/1.0/text/check.json'
+            requester = APIRequester()
+            result = requester.make_request(url, data)
+            output = json.loads(result.text)
             available = categories.split(',')
             for ava in available:
                 element = output.get(ava, {})
@@ -107,11 +161,13 @@ def detect_nsfw(image_tensor):
         'api_user': '285381362',
         'api_secret': 'yWPvsrEKjA8SuYynXGbEbvmEW5gAhhNc'
     }
-    try:
-        r = requests.get('https://api.sightengine.com/1.0/check.json', params=params)
+    url = 'https://api.sightengine.com/1.0/check.json'
+    requester = APIRequester()
 
-        output = json.loads(r.text)
-        nudity = output.get("nudity", {})
+    try:
+        # r = requests.get('https://api.sightengine.com/1.0/check.json', params=params)
+        result = requester.make_request(url, params)
+        nudity = result.get("nudity", {})
 
         # 可以选择关注的字段（越靠前越严重）
         flags = [
@@ -133,16 +189,18 @@ def detect_nsfw(image_tensor):
         print("请求报错：", e)
 
 def detect_horror(image_tensor):
+    requester = APIRequester()
     response = requests.get(image_tensor, allow_redirects=True)
+    url = 'https://api.sightengine.com/1.0/check.json'
     params = {
         'url': response.url,
         'models': 'gore-2.0',
-        'api_user': '285381362',
-        'api_secret': 'yWPvsrEKjA8SuYynXGbEbvmEW5gAhhNc'
+        'api_user': '',
+        'api_secret': ''
     }
-    r = requests.get('https://api.sightengine.com/1.0/check.json', params=params)
-    response = json.loads(r.text)
-    gore = response["gore"]
+    # r = requests.get('https://api.sightengine.com/1.0/check.json', params=params)
+    result = requester.make_request(url, params)
+    gore = result["gore"]
     if (gore["prob"] > 0.001) :
         return True
     else:
