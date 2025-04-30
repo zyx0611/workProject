@@ -8,7 +8,6 @@ import urllib.parse
 import requests
 from concurrent.futures import ThreadPoolExecutor
 import time
-from pages.aiseoTest.compliance import analyze_headings_with_selenium
 
 nltk.download('punkt')  # 只第一次需要
 
@@ -144,8 +143,32 @@ def check_access_identifier(chrome, url):
         return True
     return False
 
-def analyze_headings(chrome, text):
-    return analyze_headings_with_selenium(chrome, text)
+def analyze_headings(chrome):
+    try:
+        headings = []
+        for level in range(1, 7):
+            tags = chrome.find_elements(By.TAG_NAME, f'h{level}')
+            for tag in tags:
+                text = tag.text.strip()
+                if text:
+                    headings.append((f'h{level}', text))
+
+        h1_count = sum(1 for tag, _ in headings if tag == 'h1')
+        h2_count = sum(1 for tag, _ in headings if tag == 'h2')
+        if h1_count == 0:
+            print("❌ 缺少 <h1> 标签")
+            return False
+        elif h1_count > 1:
+            print(f"⚠️ 存在多个 <h1> 标签（{h1_count} 个）")
+        else:
+            print("✅ 正常包含一个 <h1> 标签")
+        if h2_count == 0:
+            print("❌ 缺少 <h2> 标签")
+        else:
+            print("✅ 存在 <h2> 标签")
+        return True
+    except Exception as e:
+        print(f"获取h标签失败：{e}")
 
 def check_synonym(chrome):
     keyword = chrome.find_element(By.NAME, 'keywords')

@@ -18,17 +18,6 @@ def url(request):
     return request.param
 
 @pytest.fixture()
-def webdriverStaterGetText(chrome):
-    # 定位正文元素（根据实际情况调整选择器）
-    body_element = chrome.find_element(By.CLASS_NAME, "markdown-content")
-
-    # 提取并清理文本
-    raw_text = body_element.get_attribute("innerText")
-    cleaned_text = raw_text.replace("\n", " ")
-    yield cleaned_text
-    chrome.quit()  # 合并换行符
-
-@pytest.fixture()
 def chrome(url):
     options = Options()
     options.add_argument('--headless')  # 设置为无头模式
@@ -103,8 +92,8 @@ class Test:
     @allure.suite("体育信息")
     @allure.title("sports_info: {url}")
     @allure.story("是否包含多级标签")
-    def test_analyze_headings(self, url, chrome, webdriverStaterGetText):
-        assert sportsInfo.analyze_headings(chrome, webdriverStaterGetText)
+    def test_analyze_headings(self, url, chrome):
+        assert sportsInfo.analyze_headings(chrome)
 
     @allure.suite("体育信息")
     @allure.title("sports_info: {url}")
