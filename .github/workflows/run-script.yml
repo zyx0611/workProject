@@ -22,6 +22,7 @@ jobs:
       run: |
         pip install requests
         pip install BeautifulSoup4
+        pip install lxml
 
 
     - name: Run script
