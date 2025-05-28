@@ -7,7 +7,7 @@ response = requests.get('http://www.cnhivehub.com/sitemap.xml')
 if response.status_code == 200:
     soup = BeautifulSoup(response.text, 'xml')
     arr = [i.text for i in soup.find_all('loc')]
-    with open('../../utils/dayNum.csv', 'r+') as a:
+    with open('utils/dayNum.csv', 'r+') as a:
         content = csv.reader(a)
         for con in content:
             num = int(con[0])
