@@ -16,6 +16,7 @@ if response.status_code == 200:
 
         # 拼接为 text/plain 格式：每行一个 URL
         data = "\n".join(urlArray)
+        print('本次URL:' ,data)
 
         # 发起 POST 请求
         headers = {'Content-Type': 'text/plain'}
