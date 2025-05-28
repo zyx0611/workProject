@@ -1,4 +1,4 @@
-name: Run Judge SEO
+name: Run auto commit url
 
 on:
   schedule:
@@ -22,7 +22,6 @@ jobs:
       run: |
         pip install requests
         pip install BeautifulSoup4
-        pip install csv
 
 
     - name: Run script
