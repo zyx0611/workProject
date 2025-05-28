@@ -31,4 +31,4 @@ jobs:
         echo "列出目录内容："
         ls -la
         echo "开始运行脚本"
-        python pages/seo_commit/test_aiseo.py
+        python pages/seo_commit/index.py
