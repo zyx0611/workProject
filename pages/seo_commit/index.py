@@ -18,7 +18,7 @@ if response.status_code == 200:
         else:
             num = 0  # fallback
 
-        urlArray = arr[num * 10: (num + 1) * 10]
+        urlArray = arr[num * 10: (num * 10 + 1)]
         url = "http://data.zz.baidu.com/urls?site=www.cnhivehub.com&token=eehiuOEZPm72Y49K"
 
         data = "\n".join(urlArray)
