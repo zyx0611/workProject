@@ -5,6 +5,9 @@ on:
     - cron: '0 0 * * *'
   workflow_dispatch:         # 也可以手动触发
 
+permissions:
+  contents: write
+
 jobs:
   run-script:
     runs-on: ubuntu-latest
@@ -33,3 +36,14 @@ jobs:
         ls -la
         echo "开始运行脚本"
         python pages/seo_commit/index.py
+
+    - name: Commit and push changes
+      run: |
+        git config user.name "zyx0611"
+        git config user.email "zhuyx1022@gmail.com"
+        
+        git add .
+        git commit -m "Auto commit: update records [skip ci]" || echo "Nothing to commit"
+        
+        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+        git push
