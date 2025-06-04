@@ -31,7 +31,7 @@ if response.status_code == 200:
 
         # 如果成功，覆盖写入新的 dayNum
         # if baiduResponse.status_code == 200:
-            a.seek(0)           # 回到文件头
-            a.truncate()        # 清空文件
-            writer = csv.writer(a)
-            writer.writerow([num + 1])
+        a.seek(0)           # 回到文件头
+        a.truncate()        # 清空文件
+        writer = csv.writer(a)
+        writer.writerow([num + 1])
