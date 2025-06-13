@@ -35,3 +35,5 @@ if response.status_code == 200:
             a.truncate()        # 清空文件
             writer = csv.writer(a)
             writer.writerow([num + 1])
+else:
+    print(f"本次请求状态码:{response.status_code}, message:{response.text}")
