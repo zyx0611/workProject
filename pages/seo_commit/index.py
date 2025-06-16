@@ -37,3 +37,4 @@ if response.status_code == 200:
             writer.writerow([num + 1])
 else:
     print(f"本次请求状态码:{response.status_code}, message:{response.text}")
+    raise Exception("请求报错!")
