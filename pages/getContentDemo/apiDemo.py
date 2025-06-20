@@ -1,17 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
 import urllib.parse
-from selenium import webdriver
-from selenium.webdriver.edge.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-
-# options = Options()
-# options.add_argument('--headless')  # 设置为无头模式
-# options.add_argument('--disable-gpu')  # 禁用GPU加速（可选）
-# options.add_argument('--window-size=1920x1080')
-# edge = webdriver.Chrome(options=options)
 
 def is_valid_url(url, title):
     if not url:
@@ -31,16 +20,6 @@ def check_page_quality(url, headers):
             return False
         soup = BeautifulSoup(r.text, 'html.parser')
         text = soup.get_text(strip=True)
-        # edge.get(url)
-        # # 等待页面完全加载（readyState == "complete"）
-        # WebDriverWait(edge, 10).until(
-        #     lambda d: d.execute_script("return document.readyState") == "complete"
-        # )
-        #
-        # # 等待某个具体元素出现，例如 div.content（你可以替换为你目标元素）
-        # element = WebDriverWait(edge, 10).until(
-        #     EC.presence_of_element_located((By.CSS_SELECTOR, "div.content"))
-        # )
         if len(text) < 200:
             return False
         return True
@@ -53,7 +32,8 @@ def search_baidu_article(keyword):
 
     # 设置请求头模拟浏览器
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+        "cookie": "MUID=3EF2F962DD9364543ACBECA1DC7965E0; ANON=A=D099E653DDB16EEFEE604837FFFFFFFF&E=1f22&W=4; NAP=V=1.9&E=1ec8&C=mLP9S-HOi_fBLUVGBn1_Z9DvXl0ngZZUmzp0PNA3gZIDCcdBfxBuhw&W=4; MUIDB=3EF2F962DD9364543ACBECA1DC7965E0; SRCHD=AF=NOFORM; SRCHUID=V=2&GUID=70FB36C1D51C4F76A06A5631F1B97DE9&dmnchg=1; _UR=QS=0&TQS=0&Pn=0; BFBUSR=BFBHP=0; SRCHUSR=DOB=20250529&DS=1; _HPVN=CS=eyJQbiI6eyJDbiI6MSwiU3QiOjAsIlFzIjowLCJQcm9kIjoiUCJ9LCJTYyI6eyJDbiI6MSwiU3QiOjAsIlFzIjowLCJQcm9kIjoiSCJ9LCJReiI6eyJDbiI6MSwiU3QiOjAsIlFzIjowLCJQcm9kIjoiVCJ9LCJBcCI6dHJ1ZSwiTXV0ZSI6dHJ1ZSwiTGFkIjoiMjAyNS0wNS0yOVQwMDowMDowMFoiLCJJb3RkIjowLCJHd2IiOjAsIlRucyI6MCwiRGZ0IjpudWxsLCJNdnMiOjAsIkZsdCI6MCwiSW1wIjoyLCJUb2JuIjowfQ==; SRCHHPGUSR=SRCHLANG=zh-Hans&DM=0&BRW=W&BRH=M&CW=1440&CH=778&SCW=1440&SCH=778&DPR=2.0&UTC=480&PV=15.4.0; _RwBf=r=0&ilt=1&ihpd=1&ispd=0&rc=0&rb=0&rg=200&pc=0&mtu=0&rbb=0&clo=0&v=1&l=2025-05-28T07:00:00.0000000Z&lft=0001-01-01T00:00:00.0000000&aof=0&ard=0001-01-01T00:00:00.0000000&rwdbt=0&rwflt=0&rwaul2=0&g=&o=2&p=&c=&t=0&s=0001-01-01T00:00:00.0000000+00:00&ts=2025-05-29T06:38:47.1503266+00:00&rwred=0&wls=&wlb=&wle=&ccp=&cpt=&lka=0&lkt=0&aad=0&TH=&cid=0&gb=; ai_user=P/YuZ|2025-05-29T07:04:37.818Z"
     }
 
     try:
@@ -114,5 +94,3 @@ if __name__ == "__main__":
     keywords = ['人工智能写作', '内容生成', '技术挑战']
     for keyword in keywords:
         search_baidu_article(keyword)
-
-        "语言流畅性","情节合理性","角色塑造","结构完整性","创造力与新颖性","合规与伦理性"
