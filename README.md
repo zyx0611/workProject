@@ -1,3 +1,3 @@
 # workProject
 
-今天熟悉ai女友后段代码,测试sillyTavern框架
+代理sillytarven框架,测试接口能否接通
