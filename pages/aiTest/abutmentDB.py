@@ -27,7 +27,7 @@ async def analyze_page(session, url, article_id):
         async with session.get(url, timeout=10, ssl=ssl_context) as resp:
             project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
             os.chdir(project_root)
-            test_file = "tests/test_aiseo.py"
+            test_file = "tests/test_ai.py"
 
             cmd = [
                 sys.executable,

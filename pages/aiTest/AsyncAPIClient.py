@@ -2,7 +2,7 @@ import asyncio
 import json
 import time
 import httpx
-from pages.aiseoTest.SignatureUtils import SignatureUtils
+from pages.aiTest.SignatureUtils import SignatureUtils
 
 class AsyncAPIClient:
     def __init__(self, base_url: str, timeout: float = 10.0):
@@ -67,23 +67,22 @@ class AsyncAPIClient:
 async def main():
     # 调用示例
 
-    client = AsyncAPIClient(base_url="https://comic.frw.cnhivehub.com", timeout=20)
+    client = AsyncAPIClient(base_url="http://192.168.1.196:8038", timeout=20)
     (client
-     .set_access_secret("user2") # 添加 access_secret（必填）
+     .set_access_secret("S1MrAPIaU1LzjSG1USZzdoyV3y9H_VV6X7D1BfzkRH8") # 添加 access_secret（必填）
 
-     .set_access_key("1234qwer") # 添加 access_key（必填）
+     .set_access_key("AK-12726BF3B45A4FCEB6C5EC920223DC46") # 添加 access_key（必填）
 
      .set_default_head())
     response = (
         client
-            .add_param("flow_name", "img2img_inpaint")
-            .add_param("source_urls",{"source": "https://ip:port/view?filename=girl.jpeg","mask_source": "https://ip:port/view?filename=canvas.png"})
-            .add_param("prompt_config",  {"refine_negative": "blurry, low quality, distortion","refine_positive": "bikini，blue color"})
+            .add_param("page", 1)
+            .add_param("limit",10)
             .add_param("timestamp", int(time.time()))  # 添加时间戳（必填）
 
             .sign_params() # 使用签名工具生成签名
 
-            .send_request("/api/models/generate/process", method="POST")
+            .send_request("/api/public/task_history", method="GET")
     )
     result = await response
     print(f"result: {result}")

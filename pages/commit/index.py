@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 import csv
 
-response = requests.get('http://www.cnhivehub.com/sitemap.xml')
+response = requests.get('https://www.cnhivehub.com/sitemap.xml')
 
 if response.status_code == 200:
     soup = BeautifulSoup(response.text, 'xml')

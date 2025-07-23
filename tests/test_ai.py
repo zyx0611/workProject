@@ -6,10 +6,12 @@ import pytest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.edge.options import Options
 
-from pages.aiseoTest import aiseoTest, antiCompliance, compliance
+from pages.aiTest import aiTest, antiCompliance, compliance
 from selenium import webdriver
 import allure
 import subprocess
+from bs4 import BeautifulSoup
+import requests
 
 # @pytest.fixture(scope="session", autouse=True)
 # def generate_csv_data():
@@ -25,9 +27,31 @@ def load_urls_from_csv(csv_path='../utils/yesterdayURL.csv'):
         reader = csv.reader(f)  # 不使用DictReader
         return [row[0] for row in reader if row]  # 提取每行第一个元素
 
+def get_soup_from_url(url, timeout=10):
+    """获取网页并返回 BeautifulSoup 对象"""
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
+    try:
+        response = requests.get(url, headers=headers, timeout=timeout)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, 'html.parser')
+        return soup, ''
+    except Exception as e:
+        return None, str(e)
+
 @pytest.fixture(scope="module", params=load_urls_from_csv())
 def url(request):
-    return request.param
+    date_str, url_str = request.param
+    soup, error = get_soup_from_url(url_str)
+    allure.dynamic.parameter("Test Date", date_str)
+    allure.dynamic.link(url_str)
+    return {
+        "date": date_str,
+        "url": url_str,
+        "soup": soup,
+        "error": error
+    }
 
 @pytest.fixture()
 def edge(url):
